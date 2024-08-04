@@ -1,15 +1,26 @@
 import * as assert from 'assert';
+import { getWeekRange } from '../extension';
 
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
-import * as vscode from 'vscode';
-// import * as myExtension from '../../extension';
+suite('getWeekRange Tests', () => {
+	const testCases = [
+		{
+			date: new Date('2024-06-10'),
+			expectedRange: '2024-06-10--2024-06-16 W24',
+		},
+		{
+			date: new Date('2024-06-11'),
+			expectedRange: '2024-06-10--2024-06-16 W24',
+		},
+		{
+			date: new Date('2024-06-16'),
+			expectedRange: '2024-06-10--2024-06-16 W24',
+		},
+	];
 
-suite('Extension Test Suite', () => {
-	vscode.window.showInformationMessage('Start all tests.');
-
-	test('Sample test', () => {
-		assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-		assert.strictEqual(-1, [1, 2, 3].indexOf(0));
+	testCases.forEach((testCase, index) => {
+		test(`Returns correct week range for a given date ${testCase.date}`, () => {
+			const actualRange = getWeekRange(testCase.date);
+			assert.strictEqual(actualRange, testCase.expectedRange);
+		});
 	});
 });

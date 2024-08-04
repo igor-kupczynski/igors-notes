@@ -1,7 +1,8 @@
 {
   "name": "igors-notes",
   "displayName": "Igor's Notes",
-  "description": "Extension to simplify my notetaking",
+  "description": "Extension to simplify my note taking",
+  "publisher": "igor-kupczynski",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.92.0"
@@ -14,8 +15,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "igors-notes.helloWorld",
-        "title": "Hello World"
+        "command": "extension.insertCurrentWeek",
+        "title": "Insert Current Week"
+      },
+      {
+        "command": "extension.insertNextWeek",
+        "title": "Insert Next Week"
       }
     ]
   },

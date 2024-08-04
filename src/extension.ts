@@ -1,26 +1,38 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+    let insertCurrentWeekCommand = vscode.commands.registerCommand('extension.insertCurrentWeek', async () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const currentWeek = getWeekRange(new Date());
+            editor.edit(editBuilder => {
+                editBuilder.insert(editor.selection.active, currentWeek);
+            });
+        }
+    });
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "igors-notes" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('igors-notes.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Igor&#39;s Notes!');
+	let insertNextWeekCommand = vscode.commands.registerCommand('extension.insertNextWeek', async () => {
+		const editor = vscode.window.activeTextEditor;
+		if (editor) {
+			const nextWeek = getWeekRange(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+			editor.edit(editBuilder => {
+				editBuilder.insert(editor.selection.active, nextWeek);
+			});
+		}
 	});
 
-	context.subscriptions.push(disposable);
+    context.subscriptions.push(insertCurrentWeekCommand);
+	context.subscriptions.push(insertNextWeekCommand);
 }
 
-// This method is called when your extension is deactivated
+export function getWeekRange(day: Date): string {
+    const dayOfWeek = day.getDay();
+    const diff = day.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+    const monday = new Date(day.setDate(diff));
+	const sunday = new Date(day.setDate(diff + 6));
+    const yearStart = new Date(day.getFullYear(), 0, 1);
+    const weekNumber = Math.ceil((((monday.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+    return `${monday.toISOString().split('T')[0]}--${sunday.toISOString().split('T')[0]} W${weekNumber}`;
+}
+
 export function deactivate() {}
